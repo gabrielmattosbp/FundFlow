@@ -1,0 +1,17 @@
+{
+  "name": "FundFlow",
+  "short_name": "FundFlow",
+  "description": "Gestão financeira pessoal",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#863bff",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

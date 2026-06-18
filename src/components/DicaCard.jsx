@@ -1,6 +1,4 @@
-// Card com dica financeira dinâmica baseada nas transações do utilizador
 export default function DicaCard({ transacoes, moeda = '€', t }) {
-  // Calcula totais a partir das transações reais
   const totalReceitas = transacoes
     .filter((trx) => trx.tipo === 'receita')
     .reduce((acc, trx) => acc + trx.valor, 0)
@@ -14,29 +12,52 @@ export default function DicaCard({ transacoes, moeda = '€', t }) {
     .reduce((acc, trx) => acc + trx.valor, 0)
 
   const saldo = totalReceitas - totalDespesas
+  const expenseRatio = totalReceitas > 0 ? totalDespesas / totalReceitas : 0
+  const subscriptionRatio = totalReceitas > 0 ? totalSubscricoes / totalReceitas : 0
 
-  // Lógica da dica
   let percentagem, mensagem
 
   if (totalReceitas <= 0) {
     percentagem = 0
     mensagem = t('adicioneReceitas')
-  } else if (saldo > 0) {
-    percentagem = 20
-    const valorSugerido = totalReceitas * 0.2
-    mensagem = t('dicaPoupanca', percentagem, moeda, valorSugerido)
-    if (totalSubscricoes > 0) {
-      mensagem += t('dicaSubscricoes', moeda, totalSubscricoes)
-    }
-  } else if (saldo <= 0 && totalDespesas > 0) {
+  } else if (expenseRatio >= 1) {
     percentagem = 0
     mensagem = t('dicaDespesasAltas', moeda, totalDespesas)
     if (totalSubscricoes > 0) {
       mensagem += t('dicaDespesasSub', moeda, totalSubscricoes)
     }
+  } else if (expenseRatio < 0.4) {
+    percentagem = Math.round((1 - expenseRatio) * 50)
+    const valorSugerido = totalReceitas * (percentagem / 100)
+    mensagem = t('dicaPoupanca', percentagem, moeda, valorSugerido)
+    if (subscriptionRatio > 0.15) {
+      mensagem += t('dicaSubscricoes', moeda, totalSubscricoes)
+    }
+  } else if (expenseRatio < 0.6) {
+    percentagem = Math.round((1 - expenseRatio) * 40)
+    const valorSugerido = totalReceitas * (percentagem / 100)
+    mensagem = t('dicaPoupanca', percentagem, moeda, valorSugerido)
+    if (subscriptionRatio > 0.15) {
+      mensagem += t('dicaSubscricoes', moeda, totalSubscricoes)
+    }
+  } else if (expenseRatio < 0.8) {
+    percentagem = Math.round((1 - expenseRatio) * 35)
+    const valorSugerido = totalReceitas * (percentagem / 100)
+    mensagem = t('dicaPoupanca', percentagem, moeda, valorSugerido)
+    if (subscriptionRatio > 0.12) {
+      mensagem += t('dicaSubscricoes', moeda, totalSubscricoes)
+    }
   } else {
-    percentagem = 0
-    mensagem = t('dicaPadrao')
+    percentagem = Math.round((1 - expenseRatio) * 30)
+    const valorSugerido = totalReceitas * (percentagem / 100)
+    if (percentagem > 0) {
+      mensagem = t('dicaPoupanca', percentagem, moeda, valorSugerido)
+    } else {
+      mensagem = t('dicaDespesasAltas', moeda, totalDespesas)
+    }
+    if (subscriptionRatio > 0.1 && totalSubscricoes > 0) {
+      mensagem += t('dicaDespesasSub', moeda, totalSubscricoes)
+    }
   }
 
   return (
