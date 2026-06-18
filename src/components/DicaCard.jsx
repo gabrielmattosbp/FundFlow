@@ -26,36 +26,15 @@ export default function DicaCard({ transacoes, moeda = '€', t }) {
     if (totalSubscricoes > 0) {
       mensagem += t('dicaDespesasSub', moeda, totalSubscricoes)
     }
-  } else if (expenseRatio < 0.4) {
-    percentagem = Math.round((1 - expenseRatio) * 50)
-    const valorSugerido = totalReceitas * (percentagem / 100)
-    mensagem = t('dicaPoupanca', percentagem, moeda, valorSugerido)
-    if (subscriptionRatio > 0.15) {
-      mensagem += t('dicaSubscricoes', moeda, totalSubscricoes)
-    }
-  } else if (expenseRatio < 0.6) {
-    percentagem = Math.round((1 - expenseRatio) * 40)
-    const valorSugerido = totalReceitas * (percentagem / 100)
-    mensagem = t('dicaPoupanca', percentagem, moeda, valorSugerido)
-    if (subscriptionRatio > 0.15) {
-      mensagem += t('dicaSubscricoes', moeda, totalSubscricoes)
-    }
-  } else if (expenseRatio < 0.8) {
-    percentagem = Math.round((1 - expenseRatio) * 35)
-    const valorSugerido = totalReceitas * (percentagem / 100)
-    mensagem = t('dicaPoupanca', percentagem, moeda, valorSugerido)
-    if (subscriptionRatio > 0.12) {
-      mensagem += t('dicaSubscricoes', moeda, totalSubscricoes)
-    }
   } else {
-    percentagem = Math.round((1 - expenseRatio) * 30)
-    const valorSugerido = totalReceitas * (percentagem / 100)
-    if (percentagem > 0) {
-      mensagem = t('dicaPoupanca', percentagem, moeda, valorSugerido)
-    } else {
-      mensagem = t('dicaDespesasAltas', moeda, totalDespesas)
-    }
-    if (subscriptionRatio > 0.1 && totalSubscricoes > 0) {
+    percentagem = Math.round((saldo / totalReceitas) * 100)
+    const valorSugerido = saldo
+    mensagem = t('dicaPoupanca', percentagem, moeda, valorSugerido)
+    if (expenseRatio < 0.5 && subscriptionRatio > 0.15) {
+      mensagem += t('dicaSubscricoes', moeda, totalSubscricoes)
+    } else if (expenseRatio >= 0.5 && expenseRatio < 0.8 && subscriptionRatio > 0.12) {
+      mensagem += t('dicaSubscricoes', moeda, totalSubscricoes)
+    } else if (expenseRatio >= 0.8 && subscriptionRatio > 0.1) {
       mensagem += t('dicaDespesasSub', moeda, totalSubscricoes)
     }
   }
