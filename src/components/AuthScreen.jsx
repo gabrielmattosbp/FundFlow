@@ -36,7 +36,7 @@ export default function AuthScreen({ onAuthSuccess, t }) {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-slate-900">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg ring-1 ring-gray-100 dark:bg-slate-800 dark:ring-slate-700">
+      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-100 dark:bg-slate-800 dark:ring-slate-700 sm:p-8">
         <h1 className="mb-2 text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-slate-100">
           FundFlow
         </h1>

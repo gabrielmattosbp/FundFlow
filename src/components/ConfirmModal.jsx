@@ -1,7 +1,7 @@
 export default function ConfirmModal({ message, onConfirm, onCancel }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onCancel}>
-      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-800" onClick={(e) => e.stopPropagation()}>
+      <div className="mx-4 w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl dark:bg-slate-800 sm:p-6" onClick={(e) => e.stopPropagation()}>
         <p className="mb-6 text-sm text-gray-700 dark:text-slate-300">
           {message}
         </p>

@@ -2,8 +2,8 @@ export default function SubscriptionModal({ transacoes, moeda = '€', onClose, 
   const subscricoes = transacoes.filter((tr) => tr.subscricao)
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className="flex max-h-[80vh] w-full max-w-lg flex-col rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-800" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4" onClick={onClose}>
+      <div className="flex max-h-[80vh] w-full max-w-lg flex-col rounded-2xl bg-white p-3 shadow-xl dark:bg-slate-800 sm:p-6" onClick={(e) => e.stopPropagation()}>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100">{t('subscricao')}</h3>
           <button onClick={onClose} className="rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-slate-700 dark:hover:text-slate-300">

@@ -32,7 +32,7 @@ export default function ModalConfiguracoes({ settings, onSave, onClose, onExport
           {/* Aparência */}
           <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-slate-500">{t('aparência')}</h3>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <div className="flex flex-col gap-0.5">
                 <label className="text-[11px] text-gray-400 dark:text-slate-500">{t('tema')}</label>
                 <select value={form.tema} onChange={(e) => update('tema', e.target.value)} className="rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-(--accent-ring) dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200">
@@ -64,7 +64,7 @@ export default function ModalConfiguracoes({ settings, onSave, onClose, onExport
           {/* Localização */}
           <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-slate-500">{t('localização')}</h3>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <div className="flex flex-col gap-0.5">
                 <label className="text-[11px] text-gray-400 dark:text-slate-500">{t('moeda')}</label>
                 <select value={form.moeda} onChange={(e) => update('moeda', e.target.value)} className="rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-(--accent-ring) dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200">
