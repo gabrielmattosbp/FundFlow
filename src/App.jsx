@@ -106,7 +106,7 @@ function App() {
     }
 
     loadData()
-  }, [authenticated])
+  }, [authenticated, settings.moeda])
 
   async function addTransaction(form) {
     if (!accountId) return
