@@ -55,8 +55,6 @@ function App() {
   const [showClearConfirm, setShowClearConfirm] = useState(false)
   const [showSubscriptionsModal, setShowSubscriptionsModal] = useState(false)
   const [accountId, setAccountId] = useState(null)
-  const [accounts, setAccounts] = useState([])
-  const [loading, setLoading] = useState(true)
   const t = useTranslations(settings.idioma)
 
   // Aplica tema, fonte e cor globalmente
@@ -80,7 +78,6 @@ function App() {
     async function loadData() {
       try {
         const accountsData = await fetchAccounts()
-        setAccounts(accountsData.accounts)
         let defaultAccountId
         if (accountsData.accounts.length === 0) {
           const newAcct = await createAccount({
@@ -89,7 +86,6 @@ function App() {
             currency: settings.moeda,
           })
           defaultAccountId = newAcct.id
-          setAccounts([newAcct])
         } else {
           defaultAccountId = accountsData.accounts[0].id
         }
@@ -106,8 +102,6 @@ function App() {
         })))
       } catch (err) {
         console.error('Erro ao carregar dados:', err)
-      } finally {
-        setLoading(false)
       }
     }
 
@@ -209,7 +203,7 @@ function App() {
           const lines = text.split('\n').slice(1).filter(Boolean)
           const imported = lines.map((line) => {
             const [tipo, descricao, categoria, data, valor, subscricao] = line.split(',')
-            return { id: crypto.randomUUID(), tipo, descricao, categoria, data, valor: Number(valor), subscricao: subscricao === 'sim' }
+            return { id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`, tipo, descricao, categoria, data, valor: Number(valor), subscricao: subscricao === 'sim' }
           })
           setTransacoes((prev) => [...imported, ...prev])
           alert(t('importadoCSV', imported.length))
@@ -224,12 +218,12 @@ function App() {
     <div className="min-h-screen bg-gray-50 p-4 dark:bg-slate-900 sm:p-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-slate-100">
+          <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-slate-100 sm:text-3xl">
             {t('appTitle')}
           </h1>
           <button
             onClick={handleLogout}
-            className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-600 shadow-sm transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+            className="rounded-xl border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 shadow-sm transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 sm:px-4 sm:py-2 sm:text-sm"
           >
             Sair
           </button>
@@ -250,16 +244,16 @@ function App() {
           <div className="lg:col-span-8">
             <SubscriptionAlert transacoes={transacoesFiltradas} moeda={moeda} onShowSubscriptions={() => setShowSubscriptionsModal(true)} t={t} />
           </div>
-          <div className="flex items-center justify-end gap-4 lg:col-span-4">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end lg:col-span-4">
             <button
               onClick={() => setShowTransactionsModal(true)}
-              className="rounded-xl bg-(--accent) px-8 py-4 text-base font-semibold text-white shadow transition hover:bg-(--accent-hover)"
+              className="w-full rounded-xl bg-(--accent) px-5 py-3 text-sm font-semibold text-white shadow transition hover:bg-(--accent-hover) sm:w-auto sm:px-8 sm:py-4 sm:text-base"
             >
               {t('checarTransacoes')}
             </button>
             <button
               onClick={() => setShowSettingsModal(true)}
-              className="rounded-xl border border-gray-300 bg-white px-8 py-4 text-base font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+              className="w-full rounded-xl border border-gray-300 bg-white px-5 py-3 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 sm:w-auto sm:px-8 sm:py-4 sm:text-base"
             >
               {t('configuracoes')}
             </button>

@@ -150,7 +150,7 @@ export default function DashboardTable({ transacoes, mesFiltro, setMesFiltro, sh
   // Adiciona um novo botão rápido customizado à lista
   function handleAddCustom() {
     if (!customForm.label || !customForm.descricao) return
-    setCustomItems([...customItems, { ...customForm, id: crypto.randomUUID() }])
+    setCustomItems([...customItems, { ...customForm, id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 9)}` }])
     setCustomForm({ label: '', descricao: '', categoria: 'Outros', subscricao: false, tipo: 'despesa' })
     setShowCustomForm(false)
   }
@@ -172,8 +172,8 @@ export default function DashboardTable({ transacoes, mesFiltro, setMesFiltro, sh
 
   return (
     <div className="mt-8 rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-100 dark:bg-slate-800 dark:ring-slate-700">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-slate-100">
+      <div className="mb-4 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-slate-100 sm:text-xl">
           {t('transacoes')}
         </h2>
         {/* Filtro por mês */}
@@ -181,7 +181,7 @@ export default function DashboardTable({ transacoes, mesFiltro, setMesFiltro, sh
           type="month"
           value={mesFiltro}
           onChange={(e) => setMesFiltro(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-(--accent-ring) dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200"
+          className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-(--accent-ring) dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 sm:w-auto"
         />
       </div>
 
@@ -282,7 +282,7 @@ export default function DashboardTable({ transacoes, mesFiltro, setMesFiltro, sh
       )}
 
       {/* Formulário de nova transação */}
-      <form onSubmit={handleSubmit} className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+      <form onSubmit={handleSubmit} className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
         {/* Tipo: Receita ou Despesa */}
         <select
           name="tipo"
@@ -463,8 +463,8 @@ export default function DashboardTable({ transacoes, mesFiltro, setMesFiltro, sh
 
       {/* Modal com tabela completa e pesquisa */}
       {showTransactionsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="flex max-h-[80vh] w-full max-w-4xl flex-col rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4">
+          <div className="flex max-h-[80vh] w-full max-w-4xl flex-col rounded-2xl bg-white p-3 shadow-xl dark:bg-slate-800 sm:p-6">
             {/* Cabeçalho do modal */}
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100">{t('todasTransacoes')}</h3>

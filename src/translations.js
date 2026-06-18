@@ -423,7 +423,8 @@ const translations = {
     linguaEs: 'Español',
     paisPortugal: 'Portugal',
     paisBrasil: 'Brasil',
-    paisEua: 'EE. UU.',
+    paisEua: 'EUA',
+    semSubscricoes: 'Ainda não tens subscrições. Adiciona uma transação com a opção "Subscrição" marcada.',
   },
 }
 
