@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root, [data-cor="verde"] {
+  --accent: #059669;
+  --accent-hover: #047857;
+  --accent-light: #d1fae5;
+  --accent-dark: #065f46;
+  --accent-ring: #10b981;
+  --accent-text: #059669;
+  --accent-text-light: #047857;
+  --accent-from: #059669;
+  --accent-to: #047857;
+}
+
+[data-cor="azul"] {
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-light: #dbeafe;
+  --accent-dark: #1e40af;
+  --accent-ring: #3b82f6;
+  --accent-text: #2563eb;
+  --accent-text-light: #1d4ed8;
+  --accent-from: #2563eb;
+  --accent-to: #1d4ed8;
+}
+
+[data-cor="roxo"] {
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+  --accent-light: #ede9fe;
+  --accent-dark: #5b21b6;
+  --accent-ring: #8b5cf6;
+  --accent-text: #7c3aed;
+  --accent-text-light: #6d28d9;
+  --accent-from: #7c3aed;
+  --accent-to: #6d28d9;
+}
+
+[data-cor="laranja"] {
+  --accent: #ea580c;
+  --accent-hover: #c2410c;
+  --accent-light: #fff7ed;
+  --accent-dark: #9a3412;
+  --accent-ring: #f97316;
+  --accent-text: #ea580c;
+  --accent-text-light: #c2410c;
+  --accent-from: #ea580c;
+  --accent-to: #c2410c;
+}
+
+.dark {
+  --tooltip-bg: #1e293b;
+  --tooltip-color: #e2e8f0;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  transition: background-color 0.2s;
+}
+
+.dark body,
+body.dark {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
