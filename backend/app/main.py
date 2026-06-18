@@ -9,6 +9,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.config import settings
 from app.routes import auth, accounts, transactions
 
 app = FastAPI(
@@ -17,14 +18,11 @@ app = FastAPI(
     docs_url="/docs",
 )
 
-# Allow the Vite dev server and production frontend
+cors_origins = [o.strip() for o in settings.cors_origins.split(",")]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "https://your-production-domain.com",
-    ],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
