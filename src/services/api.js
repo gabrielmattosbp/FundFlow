@@ -115,6 +115,20 @@ export function bulkImport(transactions, accountId) {
   })
 }
 
+export function forgotPassword(email) {
+  return request('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  })
+}
+
+export function resetPassword(email, token, new_password) {
+  return request('/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify({ email, token, new_password }),
+  })
+}
+
 export function fetchAccounts() {
   return request('/accounts/')
 }

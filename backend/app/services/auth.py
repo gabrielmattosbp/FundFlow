@@ -1,3 +1,4 @@
+import secrets
 from datetime import datetime, timedelta, timezone
 
 from jose import JWTError, jwt
@@ -6,6 +7,8 @@ from passlib.context import CryptContext
 from app.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+RESET_TOKEN_EXPIRE_HOURS = 1
 
 
 def hash_password(password: str) -> str:
@@ -32,3 +35,11 @@ def decode_access_token(token: str) -> str | None:
         return payload.get("sub")
     except JWTError:
         return None
+
+
+def generate_reset_token() -> str:
+    return secrets.token_urlsafe(48)
+
+
+def get_reset_token_expiry() -> datetime:
+    return datetime.now(timezone.utc) + timedelta(hours=RESET_TOKEN_EXPIRE_HOURS)

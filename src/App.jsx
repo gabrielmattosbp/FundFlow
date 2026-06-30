@@ -352,7 +352,7 @@ function App() {
         )}
 
         <footer className="mt-12 text-center text-sm text-gray-400 dark:text-slate-500">
-          FundFlow 2026 &copy;
+          FundFlow 2026 &copy; v1.0
         </footer>
       </div>
     </div>
