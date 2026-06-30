@@ -199,7 +199,7 @@ const translations = {
     escuro: 'Escuro',
     sistema: 'Sistema',
     apagarTudo: 'Apagar Tudo',
-    semSubscricoes: 'Ainda não tens subscrições. Adiciona uma transação com a opção "Subscrição" marcada.',
+    semSubscricoes: 'Você ainda não tem assinaturas. Adicione uma transação com a opção "Assinatura" marcada.',
     corVerde: 'Verde',
     corAzul: 'Azul',
     corRoxo: 'Roxo',
@@ -424,7 +424,6 @@ const translations = {
     paisPortugal: 'Portugal',
     paisBrasil: 'Brasil',
     paisEua: 'EUA',
-    semSubscricoes: 'Ainda não tens subscrições. Adiciona uma transação com a opção "Subscrição" marcada.',
   },
 }
 

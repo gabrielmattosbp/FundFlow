@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { login, register, setToken, setUser } from '../services/api'
 
-export default function AuthScreen({ onAuthSuccess, t }) {
+export default function AuthScreen({ onAuthSuccess }) {
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')

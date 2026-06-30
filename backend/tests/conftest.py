@@ -27,8 +27,13 @@ def _mock_deps():
     mock_client.table.return_value.select.return_value.eq.return_value.single.return_value.execute.return_value.data = None
     mock_client.table.return_value.insert.return_value.execute.return_value.data = [{"id": "mock-id"}]
 
+    from app.routes import deps
+    app.dependency_overrides[deps.get_current_user] = lambda: "550e8400-e29b-41d4-a716-446655440000"
+
     with patch("app.database.create_client", return_value=mock_client), \
          patch("app.database.SupabaseClient._get", return_value=mock_client), \
          patch("app.routes.auth.hash_password", return_value="$2b$12$hashedpasswordhash"), \
          patch("app.routes.auth.verify_password", return_value=True):
         yield mock_client
+
+    app.dependency_overrides.clear()

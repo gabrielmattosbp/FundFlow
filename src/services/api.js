@@ -91,6 +91,30 @@ export function deleteTransaction(id) {
   })
 }
 
+export function deleteAllTransactions() {
+  return request('/transactions/all', {
+    method: 'DELETE',
+  })
+}
+
+export function bulkImport(transactions, accountId) {
+  return request('/transactions/bulk', {
+    method: 'POST',
+    body: JSON.stringify({
+      transactions: transactions.map(tx => ({
+        account_id: accountId,
+        description: tx.descricao,
+        amount: Number(tx.valor),
+        type: tx.tipo === 'receita' ? 'income' : 'expense',
+        category: tx.categoria,
+        date: tx.data,
+        is_subscription: tx.subscricao || false,
+        currency: tx.moeda || 'EUR',
+      })),
+    }),
+  })
+}
+
 export function fetchAccounts() {
   return request('/accounts/')
 }

@@ -9,7 +9,7 @@ import ConfirmModal from './components/ConfirmModal'
 import SubscriptionModal from './components/SubscriptionModal'
 import AuthScreen from './components/AuthScreen'
 import useTranslations from './translations'
-import { isAuthenticated, setToken, setUser, fetchTransactions, deleteTransaction, createTransaction, fetchAccounts, createAccount } from './services/api'
+import { isAuthenticated, setToken, setUser, fetchTransactions, deleteTransaction, createTransaction, fetchAccounts, createAccount, deleteAllTransactions, bulkImport } from './services/api'
 
 function mesAtual() {
   const d = new Date()
@@ -54,6 +54,7 @@ function App() {
   const [settings, setSettings] = useState(loadSettings)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
   const [showSubscriptionsModal, setShowSubscriptionsModal] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [accountId, setAccountId] = useState(null)
   const t = useTranslations(settings.idioma)
 
@@ -76,6 +77,7 @@ function App() {
     if (!authenticated) return
 
     async function loadData() {
+      setLoading(true)
       try {
         const accountsData = await fetchAccounts()
         let defaultAccountId
@@ -90,7 +92,7 @@ function App() {
           defaultAccountId = accountsData.accounts[0].id
         }
         setAccountId(defaultAccountId)
-        const txData = await fetchTransactions()
+        const txData = await fetchTransactions(mesFiltro)
         setTransacoes(txData.transactions.map(tx => ({
           id: tx.id,
           tipo: tx.type === 'income' ? 'receita' : 'despesa',
@@ -102,11 +104,16 @@ function App() {
         })))
       } catch (err) {
         console.error('Erro ao carregar dados:', err)
+        if (!isAuthenticated()) {
+          setAuthenticated(false)
+        }
+      } finally {
+        setLoading(false)
       }
     }
 
     loadData()
-  }, [authenticated, settings.moeda])
+  }, [authenticated, settings.moeda, mesFiltro])
 
   async function addTransaction(form) {
     if (!accountId) return
@@ -153,7 +160,7 @@ function App() {
   }
 
   if (!authenticated) {
-    return <AuthScreen onAuthSuccess={() => setAuthenticated(true)} t={t} />
+    return <AuthScreen onAuthSuccess={() => setAuthenticated(true)} />
   }
 
   function handleSaveSettings(newSettings) {
@@ -181,21 +188,32 @@ function App() {
     alert(t('exportadoSucesso', transacoes.length))
   }
 
-  function handleImportData() {
+  async function handleImportData() {
+    if (!accountId) return
     const input = document.createElement('input')
     input.type = 'file'
     input.accept = '.csv,.json'
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
       const file = e.target.files[0]
       if (!file) return
       const reader = new FileReader()
-      reader.onload = (ev) => {
+      reader.onload = async (ev) => {
         const text = ev.target.result
         try {
           const parsed = JSON.parse(text)
           if (Array.isArray(parsed)) {
-            setTransacoes((prev) => [...parsed, ...prev])
-            alert(t('importadoJSON', parsed.length))
+            const result = await bulkImport(parsed, accountId)
+            const txData = await fetchTransactions(mesFiltro)
+            setTransacoes(txData.transactions.map(tx => ({
+              id: tx.id,
+              tipo: tx.type === 'income' ? 'receita' : 'despesa',
+              descricao: tx.description,
+              categoria: tx.category,
+              data: tx.date,
+              valor: Number(tx.amount),
+              subscricao: tx.is_subscription,
+            })))
+            alert(t('importadoJSON', result.imported))
           } else {
             alert(t('jsonInvalido'))
           }
@@ -203,10 +221,22 @@ function App() {
           const lines = text.split('\n').slice(1).filter(Boolean)
           const imported = lines.map((line) => {
             const [tipo, descricao, categoria, data, valor, subscricao] = line.split(',')
-            return { id: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`, tipo, descricao, categoria, data, valor: Number(valor), subscricao: subscricao === 'sim' }
+            return { tipo, descricao, categoria, data, valor: Number(valor), subscricao: subscricao === 'sim', moeda: settings.moeda }
           })
-          setTransacoes((prev) => [...imported, ...prev])
-          alert(t('importadoCSV', imported.length))
+          if (imported.length > 0) {
+            const result = await bulkImport(imported, accountId)
+            const txData = await fetchTransactions(mesFiltro)
+            setTransacoes(txData.transactions.map(tx => ({
+              id: tx.id,
+              tipo: tx.type === 'income' ? 'receita' : 'despesa',
+              descricao: tx.description,
+              categoria: tx.category,
+              data: tx.date,
+              valor: Number(tx.amount),
+              subscricao: tx.is_subscription,
+            })))
+            alert(t('importadoCSV', result.imported))
+          }
         }
       }
       reader.readAsText(file)
@@ -228,6 +258,16 @@ function App() {
             Sair
           </button>
         </div>
+
+        {loading && (
+          <div className="mb-4 flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-slate-400">
+            <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+            A carregar...
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           <DashboardCard title={t('saldoCorrente')} value={`${moeda} ${saldoCorrente.toFixed(2)}`} />
@@ -288,7 +328,12 @@ function App() {
         {showClearConfirm && (
           <ConfirmModal
             message={t('confirmaLimpar')}
-            onConfirm={() => {
+            onConfirm={async () => {
+              try {
+                await deleteAllTransactions()
+              } catch (e) {
+                console.error('Erro ao limpar transações no servidor:', e)
+              }
               setTransacoes([])
               setShowClearConfirm(false)
               setShowSettingsModal(false)
@@ -305,6 +350,10 @@ function App() {
             t={t}
           />
         )}
+
+        <footer className="mt-12 text-center text-sm text-gray-400 dark:text-slate-500">
+          FundFlow 2026 &copy;
+        </footer>
       </div>
     </div>
   )
