@@ -92,7 +92,7 @@ function App() {
           defaultAccountId = accountsData.accounts[0].id
         }
         setAccountId(defaultAccountId)
-        const txData = await fetchTransactions(mesFiltro)
+        const txData = await fetchTransactions()
         setTransacoes(txData.transactions.map(tx => ({
           id: tx.id,
           tipo: tx.type === 'income' ? 'receita' : 'despesa',
@@ -113,7 +113,7 @@ function App() {
     }
 
     loadData()
-  }, [authenticated, settings.moeda, mesFiltro])
+  }, [authenticated, settings.moeda])
 
   async function addTransaction(form) {
     if (!accountId) return
@@ -144,13 +144,13 @@ function App() {
   }
 
   const transacoesFiltradas = filtrarPorMes(transacoes, mesFiltro)
-  const totalReceitas = transacoesFiltradas
+  const totalReceitasAll = transacoes
     .filter((trx) => trx.tipo === 'receita')
     .reduce((acc, trx) => acc + trx.valor, 0)
-  const totalDespesas = transacoesFiltradas
+  const totalDespesasAll = transacoes
     .filter((trx) => trx.tipo === 'despesa')
     .reduce((acc, trx) => acc + trx.valor, 0)
-  const saldoCorrente = totalReceitas - totalDespesas
+  const saldoCorrenteAll = totalReceitasAll - totalDespesasAll
   const moeda = getCurrencySymbol(settings.moeda)
 
   function handleLogout() {
@@ -203,7 +203,7 @@ function App() {
           const parsed = JSON.parse(text)
           if (Array.isArray(parsed)) {
             const result = await bulkImport(parsed, accountId)
-            const txData = await fetchTransactions(mesFiltro)
+            const txData = await fetchTransactions()
             setTransacoes(txData.transactions.map(tx => ({
               id: tx.id,
               tipo: tx.type === 'income' ? 'receita' : 'despesa',
@@ -225,7 +225,7 @@ function App() {
           })
           if (imported.length > 0) {
             const result = await bulkImport(imported, accountId)
-            const txData = await fetchTransactions(mesFiltro)
+            const txData = await fetchTransactions()
             setTransacoes(txData.transactions.map(tx => ({
               id: tx.id,
               tipo: tx.type === 'income' ? 'receita' : 'despesa',
@@ -270,9 +270,9 @@ function App() {
         )}
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          <DashboardCard title={t('saldoCorrente')} value={`${moeda} ${saldoCorrente.toFixed(2)}`} />
-          <DashboardCard title={t('totalReceitas')} value={`${moeda} ${totalReceitas.toFixed(2)}`} />
-          <DashboardCard title={t('totalDespesas')} value={`${moeda} ${totalDespesas.toFixed(2)}`} />
+          <DashboardCard title={t('saldoCorrente')} value={`${moeda} ${saldoCorrenteAll.toFixed(2)}`} />
+          <DashboardCard title={t('totalReceitas')} value={`${moeda} ${totalReceitasAll.toFixed(2)}`} />
+          <DashboardCard title={t('totalDespesas')} value={`${moeda} ${totalDespesasAll.toFixed(2)}`} />
           <DicaCard transacoes={transacoesFiltradas} moeda={moeda} t={t} />
         </div>
 

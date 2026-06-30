@@ -16,6 +16,7 @@ from app.services.auth import (
     hash_password,
     verify_password,
 )
+from app.services.email import send_reset_email
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -91,10 +92,10 @@ def login(payload: UserLogin):
 
 @router.post("/forgot-password", response_model=ForgotPasswordResponse)
 def forgot_password(payload: ForgotPasswordRequest):
-    """Request a password reset token. Returns the token for dev convenience."""
+    """Request a password reset token. Emails the token if SMTP is configured."""
     resp = (
         supabase.table("users")
-        .select("id")
+        .select("id, email")
         .eq("email", payload.email)
         .single()
         .execute()
@@ -116,10 +117,17 @@ def forgot_password(payload: ForgotPasswordRequest):
         "used": False,
     }).execute()
 
-    return ForgotPasswordResponse(
-        message="Password reset token generated",
-        reset_token=token,
-    )
+    sent = send_reset_email(user["email"], token)
+
+    if sent:
+        return ForgotPasswordResponse(
+            message="A password reset link has been sent to your email.",
+        )
+    else:
+        return ForgotPasswordResponse(
+            message="Password reset token generated (email unavailable — token shown below)",
+            reset_token=token,
+        )
 
 
 @router.post("/reset-password")

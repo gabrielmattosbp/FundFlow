@@ -11,6 +11,17 @@ class Settings(BaseSettings):
 
     cors_origins: str = "http://localhost:5173,http://localhost:3000"
 
+    # SMTP (email)
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_tls: bool = True
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from: str = "noreply@fundflow.app"
+
+    # Public URL (for reset links)
+    app_url: str = "http://localhost:5173"
+
     model_config = {"env_file": ".env", "case_sensitive": False}
 
 
