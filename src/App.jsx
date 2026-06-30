@@ -248,9 +248,7 @@ function App() {
     <div className="min-h-screen bg-gray-50 p-4 dark:bg-slate-900 sm:p-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-slate-100 sm:text-3xl">
-            {t('appTitle')}
-          </h1>
+          <img src="/logo.png" alt="FundFlow" className="h-8 sm:h-10" />
           <button
             onClick={handleLogout}
             className="rounded-xl border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 shadow-sm transition hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 sm:px-4 sm:py-2 sm:text-sm"
@@ -351,7 +349,8 @@ function App() {
           />
         )}
 
-        <footer className="mt-12 text-center text-sm text-gray-400 dark:text-slate-500">
+        <footer className="mt-12 flex flex-col items-center gap-2 text-center text-sm text-gray-400 dark:text-slate-500">
+          <img src="/logo.png" alt="FundFlow" className="h-6 opacity-50" />
           FundFlow 2026 &copy; v1.0
         </footer>
       </div>
